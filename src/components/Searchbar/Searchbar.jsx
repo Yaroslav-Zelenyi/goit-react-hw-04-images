@@ -1,46 +1,42 @@
-import React, { Component } from 'react';
+import { useLocalStorage } from '../LocalStorage';
 import PropTypes from 'prop-types';
 import css from './Searchbar.module.css';
 
-export class Searchbar extends Component {
-  state = {
-    value: '',
-  };
+export function Searchbar({ query }) {
+  const [value, setValue] = useLocalStorage('queryValue', ' ');
 
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    this.props.query(this.state.value);
-    this.setState({ value: '' });
+    query(value);
+    setValue(' ');
   };
 
-  handleChageOn = event => {
-    this.setState({ value: event.target.value });
+  const handleChageOn = event => {
+    setValue(event.target.value.toLowerCase());
   };
 
-  render() {
-    return (
-      <header className={css.Searchbar}>
-        <form className={css.SearchForm} onSubmit={this.handleSubmit}>
-          <button
-            type="submit"
-            className={css.SearchForm_button}
-            disabled={this.state.value === ''}
-          >
-            <span className={css.SearchForm_button_label}>Search</span>
-          </button>
-          <input
-            className={css.SearchForm_input}
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            onChange={this.handleChageOn}
-            value={this.state.value}
-          />
-        </form>
-      </header>
-    );
-  }
+  return (
+    <header className={css.Searchbar}>
+      <form className={css.SearchForm} onSubmit={handleSubmit}>
+        <button
+          type="submit"
+          className={css.SearchForm_button}
+          disabled={value === ''}
+        >
+          <span className={css.SearchForm_button_label}>Search</span>
+        </button>
+        <input
+          className={css.SearchForm_input}
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          onChange={handleChageOn}
+          value={value}
+        />
+      </form>
+    </header>
+  );
 }
 
 Searchbar.propTypes = {

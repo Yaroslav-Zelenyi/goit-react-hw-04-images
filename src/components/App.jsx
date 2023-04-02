@@ -1,55 +1,47 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
-export class App extends Component {
-  state = {
-    query: '',
-    success: false,
-    page: 1,
-    loading: false,
+
+export function App() {
+  const [query, setQuery] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [page, setPage] = useState(1);
+
+  const submit = data => {
+    setQuery(data);
+    setPage(1);
   };
 
-  submit = data => {
-    this.setState({ query: data, page: 1 });
-  };
-
-  onFetch = data => {
+  const onFetch = data => {
     if (data.length > 0) {
-      this.setState({ success: true, loading: false });
+      setSuccess(true);
     }
   };
 
-  btnClick = () => {
-    this.setState(state => ({ page: state.page + 1 }));
+  const btnClick = () => {
+    setPage(s => s + 1);
   };
 
-  onImageSelect = data => {
-    this.setState({ selectedImage: data });
-  };
-
-  render() {
-    const { query, success, page } = this.state;
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20',
-          alignItems: 'center',
-          fontSize: 40,
-          color: '#010101',
-          paddingBottom: 20,
-        }}
-      >
-        <Searchbar query={this.submit} />
-        <ImageGallery
-          query={query}
-          onFetchComplete={this.onFetch}
-          currentPage={page}
-        />
-        {success && <Button clickHandler={this.btnClick} />}
-      </div>
-    );
-  }
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20',
+        alignItems: 'center',
+        fontSize: 40,
+        color: '#010101',
+        paddingBottom: 20,
+      }}
+    >
+      <Searchbar query={submit} />
+      <ImageGallery
+        query={query}
+        onFetchComplete={onFetch}
+        currentPage={page}
+      />
+      {success && <Button clickHandler={btnClick} />}
+    </div>
+  );
 }
